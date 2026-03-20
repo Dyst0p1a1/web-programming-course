@@ -16,8 +16,39 @@
 // - Grade: studentId, courseId, score, date
 // - CourseStats: courseId, averageGrade, totalStudents, completionRate
 
+interface Grade {
+    studentId: number;
+    courseId: number;
+    score: number;
+    date: Date;
+}
+
+interface Student {
+    id: number;
+    name: string;
+    email: string;
+    enrolledCourses: number[];
+    grades: Record<number, Grade[]>;
+}
+
+interface Course {
+    id: number;
+    title: string;
+    instructor: string;
+    duration: number;
+    maxStudents: number;
+    enrolledStudents: number[];
+}
+
+interface CourseStats {
+    courseId: number;
+    averageGrade: number;
+    totalStudents: number;
+    completionRate: number;
+}
+
 // Создание студента
-function createStudent(id, name, email) {
+function createStudent(id: number, name: string, email: string): Student {
     return {
         id,
         name,
@@ -28,7 +59,7 @@ function createStudent(id, name, email) {
 }
 
 // Создание курса
-function createCourse(id, title, instructor, duration, maxStudents) {
+function createCourse(id: number, title: string, instructor: string, duration: number, maxStudents: number): Course {
     return {
         id,
         title,
@@ -40,95 +71,87 @@ function createCourse(id, title, instructor, duration, maxStudents) {
 }
 
 // Запись студента на курс
-function enrollStudent(student, course) {
+function enrollStudent(student: Student | undefined, course: Course | undefined) {
+    if (!student || !course) {
+        return { success: false, message: 'Студент или курс не найдены' };
+    }
+
     if (course.enrolledStudents.length >= course.maxStudents) {
-        return {
-            success: false,
-            message: 'Курс переполнен'
-        };
+        return { success: false, message: 'Курс переполнен' };
     }
-    
+
     if (student.enrolledCourses.includes(course.id)) {
-        return {
-            success: false,
-            message: 'Студент уже записан на этот курс'
-        };
+        return { success: false, message: 'Студент уже записан на этот курс' };
     }
-    
+
     student.enrolledCourses.push(course.id);
     course.enrolledStudents.push(student.id);
-    
-    return {
-        success: true,
-        message: 'Студент успешно записан на курс'
-    };
+
+    return { success: true, message: 'Студент успешно записан на курс' };
 }
 
 // Выставление оценки
-function assignGrade(student, courseId, score) {
+function assignGrade(student: Student | undefined, courseId: number, score: number) {
+    if (!student) return { success: false, message: 'Студент не найден' };
+
     if (!student.enrolledCourses.includes(courseId)) {
-        return {
-            success: false,
-            message: 'Студент не записан на этот курс'
-        };
+        return { success: false, message: 'Студент не записан на этот курс' };
     }
-    
+
     if (score < 0 || score > 100) {
-        return {
-            success: false,
-            message: 'Оценка должна быть от 0 до 100'
-        };
+        return { success: false, message: 'Оценка должна быть от 0 до 100' };
     }
-    
+
     if (!student.grades[courseId]) {
         student.grades[courseId] = [];
     }
-    
+
     student.grades[courseId].push({
+        studentId: student.id,
+        courseId,
         score,
         date: new Date()
     });
-    
-    return {
-        success: true,
-        message: 'Оценка выставлена'
-    };
+
+    return { success: true, message: 'Оценка выставлена' };
 }
 
 // Расчет средней оценки студента
-function calculateStudentAverage(student, courseId) {
-    const grades = student.grades[courseId];
-    if (!grades || grades.length === 0) {
-        return null;
-    }
-    
+function calculateStudentAverage(student: Student | undefined, courseId: number): number | null {
+    if (!student) return null;
+
+    const grades = student.grades[courseId] ?? [];
+    if (grades.length === 0) return null;
+
     const sum = grades.reduce((acc, grade) => acc + grade.score, 0);
     return Math.round((sum / grades.length) * 100) / 100;
 }
 
 // Получение статистики по курсу
-function getCourseStats(course, students) {
-    const enrolledStudents = students.filter(student => 
+function getCourseStats(course: Course | undefined, students: Student[]): CourseStats | null {
+    if (!course) return null;
+
+    const enrolledStudents = students.filter(student =>
         student.enrolledCourses.includes(course.id)
     );
-    
+
     const allGrades = enrolledStudents
-        .map(student => student.grades[course.id] || [])
+        .map(student => student.grades[course.id] ?? [])
         .flat()
         .map(grade => grade.score);
-    
-    const averageGrade = allGrades.length > 0 
-        ? allGrades.reduce((sum, score) => sum + score, 0) / allGrades.length 
+
+    const averageGrade = allGrades.length > 0
+        ? allGrades.reduce((sum, score) => sum + score, 0) / allGrades.length
         : 0;
-    
-    const studentsWithGrades = enrolledStudents.filter(student => 
-        student.grades[course.id] && student.grades[course.id].length > 0
+
+    const studentsWithGrades = enrolledStudents.filter(student =>
+        (student.grades[course.id] ?? []).length > 0
     ).length;
-    
-    const completionRate = enrolledStudents.length > 0 
-        ? (studentsWithGrades / enrolledStudents.length) * 100 
+
+    const completionRate = enrolledStudents.length > 0
+        ? (studentsWithGrades / enrolledStudents.length) * 100
         : 0;
-    
+
     return {
         courseId: course.id,
         totalStudents: enrolledStudents.length,
@@ -138,14 +161,14 @@ function getCourseStats(course, students) {
 }
 
 // Поиск лучших студентов
-function getTopStudents(students, courseId, limit) {
+function getTopStudents(students: Student[], courseId: number, limit: number) {
     return students
         .map(student => ({
             ...student,
             average: calculateStudentAverage(student, courseId)
         }))
-        .filter(student => student.average !== null)
-        .sort((a, b) => b.average - a.average)
+        .filter(s => s.average !== null)
+        .sort((a, b) => (b.average! - a.average!))
         .slice(0, limit);
 }
 

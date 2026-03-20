@@ -16,7 +16,7 @@
 // TODO: Создать union тип для категорий
 // electronics | clothing | books | food | other
 
-function createProduct(id, name, price, category, inStock, tags) {
+function createProduct(id: number, name: string, price: number, category: string, inStock: boolean, tags: string[]) {
     return {
         id,
         name,
@@ -29,7 +29,7 @@ function createProduct(id, name, price, category, inStock, tags) {
 }
 
 // TODO: Типизировать функцию фильтрации товаров
-function filterProducts(products, filters) {
+function filterProducts(products: any[], filters: { category: any; inStock: any; minPrice?: any; maxPrice?: any; tag?: any; }) {
     return products.filter(product => {
         if (filters.category && product.category !== filters.category) {
             return false;
@@ -51,9 +51,27 @@ function filterProducts(products, filters) {
 }
 
 // TODO: Типизировать функцию расчета скидки
-function calculateDiscount(product, discountType, value) {
+type Product = {
+    id: number;
+    name: string;
+    price: number;
+    category: string;
+    inStock: boolean;
+    tags: string[];
+    createdAt: Date;
+};
+
+type DiscountType = 'percentage' | 'fixed' | 'buy_one_get_one';
+
+function calculateDiscount(
+    product: Product | undefined,
+    discountType: DiscountType,
+    value: number
+): { originalPrice: number; finalPrice: number; discount: number; discountType: DiscountType } | null {
+    if (!product) return null;
+
     let finalPrice = product.price;
-    
+
     switch (discountType) {
         case 'percentage':
             finalPrice = product.price * (1 - value / 100);
@@ -64,20 +82,20 @@ function calculateDiscount(product, discountType, value) {
         case 'buy_one_get_one':
             finalPrice = product.price * 0.5;
             break;
-        default:
-            break;
     }
-    
+
+    const round = (n: number) => Math.round(n * 100) / 100;
+
     return {
         originalPrice: product.price,
-        finalPrice: Math.round(finalPrice * 100) / 100,
-        discount: Math.round((product.price - finalPrice) * 100) / 100,
+        finalPrice: round(finalPrice),
+        discount: round(product.price - finalPrice),
         discountType
     };
 }
 
 // TODO: Типизировать функцию сортировки
-function sortProducts(products, sortBy, order) {
+function sortProducts(products: { id: number; name: string; price: number; category: string; inStock: boolean; tags: string[]; createdAt: Date; }[], sortBy: string, order: string) {
     return [...products].sort((a, b) => {
         let comparison = 0;
         
