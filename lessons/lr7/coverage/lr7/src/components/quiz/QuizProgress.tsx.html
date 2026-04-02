@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/23</span>
+                <span class='fraction'>0/27</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/23</span>
+                <span class='fraction'>0/27</span>
             </div>
         
             
@@ -85,7 +85,11 @@
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -107,23 +111,31 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >interface Props {</span></span></span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >interface QuizProgressProps {</span></span></span>
 <span class="cstat-no" title="statement not covered" >  current: number;</span>
 <span class="cstat-no" title="statement not covered" >  total: number;</span>
+<span class="cstat-no" title="statement not covered" >  theme?: 'light' | 'dark';</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export function QuizProgress({ current, total }: Props) {</span>
-<span class="cstat-no" title="statement not covered" >  const percentage = ((current + 1) / total) * 100;</span>
+<span class="cstat-no" title="statement not covered" >export function QuizProgress({ current, total, theme = 'light' }: QuizProgressProps) {</span>
+<span class="cstat-no" title="statement not covered" >  const percentage = total &gt; 0 ? Math.round(((current + 1) / total) * 100) : 0;</span>
+<span class="cstat-no" title="statement not covered" >  const bgColor = theme === 'light' ? 'bg-gray-200' : 'bg-gray-700';</span>
+<span class="cstat-no" title="statement not covered" >  const fillColor = theme === 'light' ? 'bg-purple-600' : 'bg-purple-500';</span>
+<span class="cstat-no" title="statement not covered" >  const textColor = theme === 'light' ? 'text-gray-600' : 'text-gray-400';</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div className="mb-4"&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="flex justify-between text-sm text-gray-600 mb-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div className={`flex justify-between text-sm ${textColor} mb-2`}&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;span&gt;Вопрос {current + 1} из {total}&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;span&gt;{Math.round(percentage)}%&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;span&gt;{percentage}%&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="w-full bg-gray-200 rounded-full h-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div className={`w-full ${bgColor} rounded-full h-2`}&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div</span>
-<span class="cstat-no" title="statement not covered" >          className="bg-blue-500 h-2 rounded-full transition-all duration-300"</span>
+<span class="cstat-no" title="statement not covered" >          className={`${fillColor} h-2 rounded-full transition-all duration-300`}</span>
 <span class="cstat-no" title="statement not covered" >          style={{ width: `${percentage}%` }}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
@@ -136,7 +148,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-02T17:58:28.076Z
+                at 2026-04-02T20:09:58.867Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for lr7/vitest.config.mjs</title>
+    <title>Code coverage report for lr7/src/components/Auth/useAuth.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../prettify.css" />
-    <link rel="stylesheet" href="../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../sort-arrow-sprite.png);
+            background-image: url(../../../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">lr7</a> vitest.config.mjs</h1>
+        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">lr7/src/components/Auth</a> useAuth.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/24</span>
+                <span class='fraction'>0/18</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/24</span>
+                <span class='fraction'>0/18</span>
             </div>
         
             
@@ -81,12 +81,7 @@
 <a name='L16'></a><a href='#L16'>16</a>
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
-<a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L19'></a><a href='#L19'>19</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -104,51 +99,41 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { defineConfig } from 'vitest/config';</span></span></span>
-<span class="cstat-no" title="statement not covered" >import react from '@vitejs/plugin-react';</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { useCallback } from 'react';</span></span></span>
+<span class="cstat-no" title="statement not covered" >import { useLocalStorageWithSubscription } from './useLocalStorageWithSubscription';</span>
+<span class="cstat-no" title="statement not covered" >import { getApiAuthGithubCallback } from '../../../generated/api/auth/auth';</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export default defineConfig({</span>
-<span class="cstat-no" title="statement not covered" >  plugins: [react()],</span>
-<span class="cstat-no" title="statement not covered" >  test: {</span>
-<span class="cstat-no" title="statement not covered" >    globals: true,</span>
-<span class="cstat-no" title="statement not covered" >    environment: 'jsdom',</span>
-<span class="cstat-no" title="statement not covered" >    setupFiles: './src/test/setup.ts',</span>
-<span class="cstat-no" title="statement not covered" >    include: ['src/**/*.{test,spec}.{ts,tsx}'],</span>
-<span class="cstat-no" title="statement not covered" >    coverage: {</span>
-<span class="cstat-no" title="statement not covered" >      provider: 'v8',</span>
-<span class="cstat-no" title="statement not covered" >      reporter: ['text', 'html', 'json'],</span>
-<span class="cstat-no" title="statement not covered" >      exclude: [</span>
-<span class="cstat-no" title="statement not covered" >        'node_modules/',</span>
-<span class="cstat-no" title="statement not covered" >        'src/test/',</span>
-<span class="cstat-no" title="statement not covered" >        '**/*.test.{ts,tsx}',</span>
-<span class="cstat-no" title="statement not covered" >        '**/*.spec.{ts,tsx}',</span>
-<span class="cstat-no" title="statement not covered" >        'generated/',</span>
-<span class="cstat-no" title="statement not covered" >        'mock-server/',</span>
-<span class="cstat-no" title="statement not covered" >      ],</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  },</span>
-<span class="cstat-no" title="statement not covered" >});</span></pre></td></tr></table></pre>
+<span class="cstat-no" title="statement not covered" >export const useAuth = () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  const { isLoading, data: token, setValue } = useLocalStorageWithSubscription('auth_token');</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const login = useCallback(async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    const { token } = await getApiAuthGithubCallback({ code: '' });</span>
+<span class="cstat-no" title="statement not covered" >    setValue(token);</span>
+<span class="cstat-no" title="statement not covered" >  }, []);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const logout = useCallback(async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    setValue(null);</span>
+<span class="cstat-no" title="statement not covered" >  }, []);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  return { isLoading, login, logout, token };</span>
+<span class="cstat-no" title="statement not covered" >};</span>
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-02T17:58:28.076Z
+                at 2026-04-02T20:09:58.867Z
             </div>
-        <script src="../prettify.js"></script>
+        <script src="../../../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../sorter.js"></script>
-        <script src="../block-navigation.js"></script>
+        <script src="../../../../sorter.js"></script>
+        <script src="../../../../block-navigation.js"></script>
     </body>
 </html>
     

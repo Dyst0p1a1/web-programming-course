@@ -52,6 +52,15 @@ describe('score utils', () => {
       ];
       expect(getCorrectAnswersCount(answers)).toBe(0);
     });
+
+    it('returns count when all answers are correct', () => {
+      const answers = [
+        { questionId: '1', isCorrect: true },
+        { questionId: '2', isCorrect: true },
+        { questionId: '3', isCorrect: true },
+      ];
+      expect(getCorrectAnswersCount(answers)).toBe(3);
+    });
   });
 
   describe('calculateAccuracy', () => {
@@ -75,6 +84,23 @@ describe('score utils', () => {
         { questionId: '2', isCorrect: true },
       ];
       expect(calculateAccuracy(answers)).toBe(100);
+    });
+
+    it('returns 0 when all wrong', () => {
+      const answers = [
+        { questionId: '1', isCorrect: false },
+        { questionId: '2', isCorrect: false },
+      ];
+      expect(calculateAccuracy(answers)).toBe(0);
+    });
+
+    it('rounds to nearest integer', () => {
+      const answers = [
+        { questionId: '1', isCorrect: true },
+        { questionId: '2', isCorrect: false },
+        { questionId: '3', isCorrect: false },
+      ];
+      expect(calculateAccuracy(answers)).toBe(33);
     });
   });
 });

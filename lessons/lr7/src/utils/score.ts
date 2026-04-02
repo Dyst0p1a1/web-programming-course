@@ -1,4 +1,8 @@
-import type { Answer } from '../types/quiz';
+export interface Answer {
+  questionId: string | number;
+  pointsEarned?: number;
+  isCorrect: boolean;
+}
 
 export function calculateTotalScore(answers: Answer[]): number {
   return answers.reduce((sum, a) => sum + (a.pointsEarned || 0), 0);

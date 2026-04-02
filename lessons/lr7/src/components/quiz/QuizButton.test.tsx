@@ -37,12 +37,18 @@ describe('QuizButton', () => {
   it('applies primary variant styles by default', () => {
     render(<QuizButton onClick={() => {}}>Primary</QuizButton>);
     const button = screen.getByRole('button');
-    expect(button.className).toContain('bg-blue-500');
+    expect(button.className).toContain('bg-purple-600');
   });
 
   it('applies secondary variant styles when specified', () => {
     render(<QuizButton onClick={() => {}} variant="secondary">Secondary</QuizButton>);
     const button = screen.getByRole('button');
     expect(button.className).toContain('bg-gray-200');
+  });
+
+  it('applies custom className', () => {
+    render(<QuizButton onClick={() => {}} className="custom-class">Button</QuizButton>);
+    const button = screen.getByRole('button');
+    expect(button.className).toContain('custom-class');
   });
 });
