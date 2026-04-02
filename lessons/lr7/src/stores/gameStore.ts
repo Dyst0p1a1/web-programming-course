@@ -1,17 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 import type { Question, Answer } from '../types/quiz';
 
-// Интерфейс для превью вопроса (совместим с API)
-export interface QuestionPreview {
-  id: string;
-  options?: string[];
-  type?: string;
+interface QuestionPreview {
+  id: string | number;
   question?: string;
   text?: string;
-  difficulty?: string;
+  options?: string[];
+  type?: 'essay' | 'choice';
+  difficulty?: 'easy' | 'medium' | 'hard';
+  maxPoints?: number;
 }
 
-export class GameStore {
+class GameStore {
   gameStatus: 'idle' | 'playing' | 'finished' = 'idle';
 
   questions: QuestionPreview[] = [];
@@ -123,4 +123,5 @@ export class GameStore {
   }
 }
 
+export { GameStore };
 export const gameStore = new GameStore();

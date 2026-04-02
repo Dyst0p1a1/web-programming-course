@@ -6,12 +6,9 @@ import { EssayQuestion } from './EssayQuestion';
 describe('EssayQuestion', () => {
   const mockQuestion = {
     id: 'q1',
-    type: 'essay' as const,
     question: 'Explain React hooks',
     minLength: 50,
     maxLength: 500,
-    difficulty: 'medium' as const,
-    maxPoints: 10,
   };
 
   it('renders textarea', () => {
@@ -86,5 +83,42 @@ describe('EssayQuestion', () => {
     );
 
     expect(screen.getByRole('textbox')).toHaveValue(currentAnswer);
+  });
+
+  it('shows red border when text is below minimum length', () => {
+    render(
+      <EssayQuestion
+        question={mockQuestion}
+        textAnswer="Short"
+        onTextChange={() => {}}
+      />
+    );
+    const textarea = screen.getByRole('textbox');
+    expect(textarea.className).toContain('border-red-500');
+  });
+
+  it('shows normal border when text meets minimum length', () => {
+    const longText = 'A'.repeat(50);
+    render(
+      <EssayQuestion
+        question={mockQuestion}
+        textAnswer={longText}
+        onTextChange={() => {}}
+      />
+    );
+    const textarea = screen.getByRole('textbox');
+    expect(textarea.className).not.toContain('border-red-500');
+  });
+
+  it('does not show minimum when minLength is 0', () => {
+    const questionNoMin = { ...mockQuestion, minLength: 0 };
+    render(
+      <EssayQuestion
+        question={questionNoMin}
+        textAnswer=""
+        onTextChange={() => {}}
+      />
+    );
+    expect(screen.queryByText(/минимум/)).not.toBeInTheDocument();
   });
 });

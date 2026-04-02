@@ -6,9 +6,9 @@ import { MultipleSelectQuestion } from './MultipleSelectQuestion';
 describe('MultipleSelectQuestion', () => {
   const mockQuestion = {
     id: 'q1',
-    type: 'multiple-select' as const,
     question: 'Which are React hooks?',
     options: ['useState', 'useEffect', 'useClass', 'useMemo'],
+    type: 'choice' as const,
     difficulty: 'easy' as const,
     maxPoints: 4,
   };
@@ -54,9 +54,9 @@ describe('MultipleSelectQuestion', () => {
     );
 
     const buttons = screen.getAllByRole('button');
-    expect(buttons[0]).toHaveTextContent('✓');
+    expect(buttons[0]).toHaveTextContent('A');
     expect(buttons[1]).toHaveTextContent('B');
-    expect(buttons[2]).toHaveTextContent('✓');
+    expect(buttons[2]).toHaveTextContent('C');
     expect(buttons[3]).toHaveTextContent('D');
   });
 
@@ -88,5 +88,44 @@ describe('MultipleSelectQuestion', () => {
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  it('renders nothing when options are empty', () => {
+    const questionWithoutOptions = { ...mockQuestion, options: [] };
+    const { container } = render(
+      <MultipleSelectQuestion
+        question={questionWithoutOptions}
+        selectedAnswers={[]}
+        onToggleAnswer={() => {}}
+      />
+    );
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('applies selected styles when answer is selected', () => {
+    render(
+      <MultipleSelectQuestion
+        question={mockQuestion}
+        selectedAnswers={[0]}
+        onToggleAnswer={() => {}}
+      />
+    );
+
+    const firstButton = screen.getByText(/useState/).closest('button');
+    expect(firstButton?.className).toContain('border-purple-500');
+  });
+
+  it('applies unselected styles when answer is not selected', () => {
+    render(
+      <MultipleSelectQuestion
+        question={mockQuestion}
+        selectedAnswers={[]}
+        onToggleAnswer={() => {}}
+      />
+    );
+
+    const firstButton = screen.getByText(/useState/).closest('button');
+    expect(firstButton?.className).toContain('border-gray-200');
   });
 });

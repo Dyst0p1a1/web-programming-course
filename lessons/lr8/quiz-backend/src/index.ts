@@ -1,22 +1,18 @@
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import { auth } from './routes/auth';
+import "dotenv/config";
 
-const app = new Hono();
+import { serve } from "@hono/node-server";
 
-// Health check endpoint
-app.get('/health', (c) => {
-  return c.json({ status: 'ok' });
-});
+import { createApp } from "./app.js";
 
-// Mount auth routes
-app.route('/api/auth', auth);
+const app = createApp();
+const port = Number(process.env.PORT ?? 3000);
 
-// Start server
-const port = 3000;
-console.log(`Server running on http://localhost:${port}`);
-
-serve({
-  fetch: app.fetch,
-  port,
-});
+serve(
+  {
+    fetch: app.fetch,
+    port,
+  },
+  (info) => {
+    console.log(`Server running on http://localhost:${info.port}`);
+  },
+);

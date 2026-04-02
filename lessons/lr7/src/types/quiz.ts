@@ -1,19 +1,21 @@
+export type QuestionType = 'essay' | 'choice';
+
 export interface Question {
-  id: string;
-  type: 'multiple-select' | 'essay' | 'choice';
+  id: string | number;
   question: string;
-  options?: string[];
+  options: string[];
+  correctAnswer: number;
   difficulty: 'easy' | 'medium' | 'hard';
-  maxPoints?: number;
-  minLength?: number;
-  maxLength?: number;
-  correctAnswer?: number;
+  type: QuestionType
 }
 
 export interface Answer {
-  questionId: string;
+  questionId: string | number;
+  selectedAnswers: number[];
   isCorrect: boolean;
-  pointsEarned?: number;
-  selectedAnswers?: number[];
   points?: number;
 }
+
+export type GameStatus = 'idle' | 'playing' | 'paused' | 'finished';
+
+export type Theme = 'light' | 'dark';

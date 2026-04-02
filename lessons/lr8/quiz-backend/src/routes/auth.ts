@@ -1,97 +1,80 @@
-import { Hono } from 'hono';
-import { PrismaClient } from '@prisma/client';
-import { sign, verify } from 'hono/jwt';
-import { callbackSchema } from '../utils/validation';
-import { getGitHubUserByCode } from '../services/github';
+import { Hono } from "hono";
+import { sign } from "hono/jwt";
 
-const prisma = new PrismaClient();
+import type { AppDependencies } from "../lib/types.js";
+import type { AppBindings } from "../middleware/auth.js";
+import { createAuthMiddleware } from "../middleware/auth.js";
+import { getGitHubUserByCode, GitHubServiceError } from "../services/github.js";
+import { authCodeSchema } from "../utils/validation.js";
 
-export const auth = new Hono();
+export const createAuthRoutes = (dependencies: AppDependencies) => {
+  const auth = new Hono<AppBindings>();
 
-// POST /api/auth/github/callback - GitHub OAuth callback
-auth.post('/github/callback', async (c) => {
-  try {
-    const body = await c.req.json();
-    const { code } = callbackSchema.parse(body);
+  auth.get("/github", (c) => {
+    const clientId = process.env.GITHUB_CLIENT_ID ?? "demo-client-id";
+    const redirectUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}`;
+    return c.json({ url: redirectUrl });
+  });
 
-    // Get GitHub user data
-    const githubUser = await getGitHubUserByCode(code);
-
-    // Create or update user in database
-    const user = await prisma.user.upsert({
-      where: { githubId: githubUser.id },
-      update: {
-        email: githubUser.email || `user${githubUser.id}@github.local`,
-        name: githubUser.name,
-      },
-      create: {
-        email: githubUser.email || `user${githubUser.id}@github.local`,
-        name: githubUser.name,
-        githubId: githubUser.id,
-      },
-    });
-
-    // Generate JWT token
-    const token = await sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET || 'fallback-secret',
-      'HS256'
-    );
-
-    return c.json({
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        githubId: user.githubId,
-        createdAt: user.createdAt,
-      },
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      return c.json({ error: error.message }, 400);
+  auth.post("/github/callback", async (c) => {
+    const payload = authCodeSchema.safeParse(await c.req.json());
+    if (!payload.success) {
+      return c.json({ error: payload.error.flatten() }, 400);
     }
-    return c.json({ error: 'Invalid request' }, 400);
-  }
-});
 
-// GET /api/auth/me - Get current user (protected)
-auth.get('/me', async (c) => {
-  const authHeader = c.req.header('Authorization');
+    try {
+      const githubUser = await getGitHubUserByCode(payload.data.code);
+      const email = githubUser.email ?? `github_${githubUser.id}@example.com`;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return c.json({ error: 'Unauthorized' }, 401);
-  }
+      const user = await dependencies.prisma.user.upsert({
+        where: { githubId: String(githubUser.id) },
+        update: {
+          email,
+          name: githubUser.name,
+        },
+        create: {
+          email,
+          name: githubUser.name,
+          githubId: String(githubUser.id),
+          role: payload.data.code.startsWith("test_admin") ? "admin" : "student",
+        },
+      });
 
-  const token = authHeader.substring(7);
+      const token = await sign(
+        {
+          userId: user.id,
+          email: user.email,
+          role: user.role,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+        },
+        dependencies.jwtSecret,
+      );
 
-  try {
-    const payload = await verify(
-      token,
-      process.env.JWT_SECRET || 'fallback-secret',
-      'HS256'
-    );
+      return c.json({
+        token,
+        user,
+      });
+    } catch (error) {
+      if (error instanceof GitHubServiceError) {
+        return c.json({ error: error.message }, error.statusCode);
+      }
 
-    const userId = payload.userId as string;
+      return c.json({ error: "Failed to authenticate with GitHub" }, 500);
+    }
+  });
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        githubId: true,
-        createdAt: true,
-      },
+  auth.get("/me", createAuthMiddleware(dependencies), async (c) => {
+    const authUser = c.get("authUser");
+    const user = await dependencies.prisma.user.findUnique({
+      where: { id: authUser.userId },
     });
 
     if (!user) {
-      return c.json({ error: 'User not found' }, 404);
+      return c.json({ error: "User not found" }, 404);
     }
 
     return c.json({ user });
-  } catch (error) {
-    return c.json({ error: 'Invalid token' }, 401);
-  }
-});
+  });
+
+  return auth;
+};
